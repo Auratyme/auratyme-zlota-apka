@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "EffectiveDayAI",
+    "slug": "effectiveDayAI",
+    "scheme": "effectiveDayAI",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/home.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/icons/home.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/home.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-router"]
+  }
+}

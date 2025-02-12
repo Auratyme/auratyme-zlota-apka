@@ -1,0 +1,8 @@
+flask==3.0.3
+transformers==4.46.3
+huggingface_hub==0.26.3
+tiktoken==0.8.0
+blobfile==3.0.0
+requests==2.32.3
+python-dotenv==1.0.1
+

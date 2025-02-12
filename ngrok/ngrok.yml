@@ -1,0 +1,12 @@
+version: 3
+
+agent:
+  authtoken: ngrok_token
+
+tunnels:
+  basic:
+    proto: http
+    addr: http://host.docker.internal:80
+  keycloak:
+    proto: http
+    addr: http://host.docker.internal:9000

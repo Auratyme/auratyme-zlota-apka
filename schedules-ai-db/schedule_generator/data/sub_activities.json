@@ -1,0 +1,66 @@
+{
+    "Personal care except eating": [
+        "Showering",
+        "Brushing Teeth",
+        "Dressing",
+        "Grooming",
+        "Using the Toilet",
+        "Other Personal Care Activities"
+    ],
+    "Personal care (Sleep)": [
+        "Sleeping"
+    ],
+    "Eating": [
+        "Breakfast",
+        "Lunch",
+        "Dinner",
+        "Snacking",
+        "Drinking Beverages",
+        "Other Eating Activities"
+    ],
+    "Work and study": [
+        "Office Work",
+        "Attending Meetings",
+        "Studying",
+        "Research",
+        "Teaching",
+        "Other Work or Study Activities"
+    ],
+    "Household and family care and related travel": [
+        "Cleaning",
+        "Laundry",
+        "Cooking",
+        "Childcare",
+        "Elderly Care",
+        "Other Household or Family Care Activities",
+        "Travel for Household or Family Care"
+    ],
+    "Leisure, social and associative life except TV": [
+        "Socializing with Friends",
+        "Hobbies",
+        "Exercise",
+        "Reading",
+        "Shopping",
+        "Other Leisure Activities",
+        "Volunteering"
+    ],
+    "Television and video": [
+        "Watching TV Shows",
+        "Watching Movies",
+        "Streaming Videos",
+        "YouTube",
+        "Other Video Consumption"
+    ],
+    "Travel to/from work/study": [
+        "Commuting by Car",
+        "Commuting by Public Transport",
+        "Walking",
+        "Cycling",
+        "Other Travel to Work or Study"
+    ],
+    "Unspecified time use and travel": [
+        "Waiting",
+        "Other Unspecified Activities",
+        "Miscellaneous Travel"
+    ]
+}
