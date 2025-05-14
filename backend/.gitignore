@@ -1,0 +1,29 @@
+### general ###
+
+# enviroment variables
+.env
+
+### schedules, schedules-2, events, mobile-app ###
+
+# deps
+node_modules/
+
+### python ###
+
+# byte-compiled, optimized, DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# huggingface cache 
+schedules-ai/schedules-ai/cache
+
+# data
+schedules-ai/data/processed
+
+### react-native ###
+.expo
+__generated__
+
+.venv
+.vscode

@@ -1,0 +1,44 @@
+# Production Configuration Overrides for Scheduler Core
+# Inherits from default.yaml
+
+# --- Logging ---
+logging:
+  level: WARNING # Log less verbosely in production
+
+# --- API Server ---
+server:
+  # Ensure CORS origins are set to the actual production frontend URL(s)
+  cors_origins:
+    - "https://app.effectiveday.ai" # Example production URL
+    # Add other allowed origins
+
+# --- LLM Engine ---
+llm:
+  # Production might use a different model or have stricter retry settings
+  # api_key should always be loaded from environment variables
+  temperature: 0.5 # Potentially less creative responses in prod
+  max_retries: 5
+  retry_delay: 2.0
+
+# --- Constraint Solver ---
+solver:
+  time_limit: 60.0 # Allow more time for potentially complex solves in production
+
+# --- Adapters ---
+rag_adapter:
+  placeholder: false # Assume RAG is configured in production
+  # vector_db_path: "/path/to/production/vector_db" # Production path
+  # embedding_model: "production-embedding-model" # Potentially different model
+
+device_adapter:
+  default_source: "FITBIT" # Example: Default to a specific provider in prod
+  # Production credentials for device APIs should be loaded securely (e.g., env vars)
+
+# --- Services ---
+analytics: {} # Production database connection details would go here or be loaded via env
+feedback_storage: {} # Production database connection details
+
+# Note: Sensitive keys (API keys, database passwords) should *never* be stored
+# directly in YAML files. Use environment variables or a secure secrets management system.
+# The application code (e.g., in server.py or specific modules) should be responsible
+# for loading these secrets from the environment and merging them with the loaded YAML config.

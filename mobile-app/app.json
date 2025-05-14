@@ -1,30 +1,59 @@
 {
   "expo": {
-    "name": "EffectiveDayAI",
-    "slug": "effectiveDayAI",
-    "scheme": "effectiveDayAI",
+    "name": "auratyme-mobile",
+    "slug": "auratyme-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/home.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/icon.png",
+    "scheme": "auratyme",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/icons/home.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.auratyme"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/home.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.auratyme",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-oqabt6mjqy7t86vc.us.auth0.com"
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d90d7f01-c2de-49da-a0f8-c30e51dbe0b9"
+      }
+    }
   }
 }

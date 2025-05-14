@@ -1,0 +1,220 @@
+name: auratyme
+
+services:
+  # -----------------------------------------------------------------------
+  # schedules
+  # -----------------------------------------------------------------------
+  schedules:
+    build:
+      context: ./schedules
+      target: dev
+    env_file:
+      - path: ./schedules/.env.dev
+        required: true
+      - path: ./schedules/.env
+        required: false
+    volumes:
+      - ./schedules/src:/app/src
+      - ./schedules/test:/app/test
+      - ./schedules/@types:/app/@types
+      - type: bind
+        source: ./schedules/tsconfig.json
+        target: /app/tsconfig.json
+      - type: bind
+        source: ./schedules/package.json
+        target: /app/package.json
+      - type: bind
+        source: ./schedules/package-lock.json
+        target: /app/package-lock.json
+      - type: bind
+        source: ./schedules/drizzle.config.ts
+        target: /app/drizzle.config.ts
+      - type: bind
+        source: ./schedules/jest.config.ts
+        target: /app/jest.config.ts
+      - type: bind
+        source: ./schedules/oauth-tenant-public-key.pem
+        target: /app/oauth-tenant-public-key.pem
+    depends_on:
+      schedules-db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    healthcheck:
+      test: curl localhost:3000/healthcheck
+      timeout: 10s
+      start_period: 15s
+
+  schedules-db:
+    build:
+      context: ./schedules-db
+    env_file:
+      - path: ./schedules-db/.env.dev
+        required: true
+      - path: ./schedules-db/.env
+        required: false
+    volumes:
+      - schedules-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+  # -----------------------------------------------------------------------
+  # schedules ai
+  # -----------------------------------------------------------------------
+  schedules-ai:
+    build:
+      context: ./schedules-ai
+      target: dev
+    env_file:
+      - path: ./schedules-ai/.env.dev
+        required: true
+      - path: ./schedules-ai/.env
+        required: false
+    volumes:
+      - ./schedules-ai/data:/app/data
+      - ./schedules-ai/logs:/app/logs
+      - ./schedules-ai/api2:/app/api2
+    ports:
+      - '8000:8000'
+    environment:
+      - ENABLE_JWT_AUTH=true
+      - DISABLE_DB=false # Można to też kontrolować przez .env.dev jeśli tam jest
+    depends_on:
+      schedules-ai-db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    healthcheck:
+      test: curl localhost:8000/health || exit 1
+      timeout: 10s
+      start_period: 30s
+
+  schedules-ai-db:
+    build:
+      context: ./schedules-ai-db
+    env_file:
+      - path: ./schedules-ai-db/.env.dev
+        required: true
+      - path: ./schedules-ai-db/.env
+        required: false
+    volumes:
+      - schedules-ai-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+  # -----------------------------------------------------------------------
+  # other
+  # -----------------------------------------------------------------------
+  broker:
+    build:
+      context: ./broker
+      target: dev
+    env_file:
+      - path: ./broker/.env.dev
+        required: true
+      - path: ./broker/.env
+        required: false
+    volumes:
+      - broker-data:/var/lib/rabbitmq
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/localhost/5672'
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  # -----------------------------------------------------------------------
+  # notifications
+  # -----------------------------------------------------------------------
+  notifications:
+    build:
+      context: ./notifications
+      target: dev
+    env_file:
+      - path: ./notifications/.env.dev
+        required: true
+      - path: ./notifications/.env
+        required: false
+    volumes:
+      - ./notifications/src:/app/src
+      - ./notifications/test:/app/test
+      - ./notifications/@types:/app/@types
+      - type: bind
+        source: ./notifications/tsconfig.json
+        target: /app/tsconfig.json
+      - type: bind
+        source: ./notifications/package.json
+        target: /app/package.json
+      - type: bind
+        source: ./notifications/package-lock.json
+        target: /app/package-lock.json
+      - type: bind
+        source: ./notifications/drizzle.config.ts
+        target: /app/drizzle.config.ts
+      - type: bind
+        source: ./notifications/jest.config.ts
+        target: /app/jest.config.ts
+      - type: bind
+        source: ./notifications/oauth-tenant-public-key.pem
+        target: /app/oauth-tenant-public-key.pem
+    healthcheck:
+      test: curl localhost:3000/healthcheck
+      timeout: 10s
+      start_period: 15s
+    depends_on:
+      schedules-ai:
+        condition: service_healthy # schedules-ai działa, więc zostawiamy healthy
+      schedules:
+        condition: service_started # Zmieniamy na started z powodu problemów w schedules
+      # Usunięto cykliczną zależność od samego siebie
+
+  notifications-db:
+    build:
+      context: ./notifications-db
+    env_file:
+      - path: ./notifications-db/.env.dev
+        required: true
+      - path: ./notifications-db/.env
+        required: false
+    volumes:
+      - notifications-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      target: dev
+    env_file:
+      - path: ./api-gateway/.env.dev
+        required: true
+      - path: ./api-gateway/.env
+        required: false
+    volumes:
+      - type: bind
+        source: ./api-gateway/etc/nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - type: bind
+        source: ./api-gateway/etc/nginx/proxy_params.conf
+        target: /etc/nginx/proxy_params.conf
+      - ./api-gateway/html:/usr/share/nginx/html
+    ports:
+      - 80:80
+    depends_on:
+      schedules-ai:
+        condition: service_healthy # schedules-ai działa, więc zostawiamy healthy
+      schedules:
+        condition: service_started # Zmieniamy na started z powodu problemów w schedules
+      notifications:
+        condition: service_started # Zmieniamy na started z powodu problemów w schedules/notifications
+  # -----------------------------------------------------------------------
+volumes:
+  schedules-db-data:
+  notifications-db-data:
+  broker-data:
+  schedules-ai-db-data:

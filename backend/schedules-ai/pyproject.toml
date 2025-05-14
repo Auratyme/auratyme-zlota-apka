@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "schedules-ai"
+version = "0.1.0"
+description = "Core engine for the EffectiveDayAI personal schedule optimizer."
+authors = ["EffectiveDayAI Team <contact@effectiveday.ai>"]
+readme = "README.md"
+packages = [{include = "src"}, {include = "api"}, {include = "feedback"}]
+
+[tool.poetry.dependencies]
+python = "^3.9" # Specify a compatible Python version (e.g., 3.9+)
+
+# Core API
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+
+# Configuration & Environment
+python-dotenv = "^1.0.0"
+pyyaml = "^6.0.1" # For reading YAML config files
+
+# Utilities
+pytz = "^2023.3.post1" # For timezone handling in time_utils
+
+# LLM Engine Dependencies
+requests = "^2.31.0"
+aiohttp = "^3.9.1"
+json5 = "^0.9.14"
+# Add specific LLM SDKs if needed later (e.g., openai, anthropic)
+
+# Constraint Solver
+ortools = "^9.8" # Google OR-Tools for scheduling
+
+# Data Analysis (Placeholder - add specific libraries as needed)
+# pandas = "^2.1.4"
+# numpy = "^1.26.2"
+
+# Wearable Data Processing (Placeholder)
+# heartpy = "^1.2.7"
+# Add others as needed
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1" # For testing async code
+ruff = "^0.1.9" # Linter and formatter
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# Ustawienie maksymalnej długości linii na 88 (zgodnie ze stylem Black)
+line-length = 88
+# Wybór podstawowych reguł lintowania (Pyflakes, pycodestyle) oraz reguł isort
+select = ["E", "F", "W", "I"]
+# Ignorowanie konkretnych reguł, jeśli zajdzie taka potrzeba (na razie puste)
+# ignore = []
+
+[tool.ruff.lint.isort]
+# Definiowanie kolejności sekcji importów (standardowa, zewnętrzne, własne)
+known-first-party = ["src", "api", "tests", "feedback"] # Dodaj inne, jeśli potrzebne
+# Można dodać inne opcje isort, np. force_single_line = true

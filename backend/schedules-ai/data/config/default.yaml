@@ -1,0 +1,141 @@
+# Default Configuration for Scheduler Core
+
+# --- Logging ---
+logging:
+  level: INFO # Default log level (DEBUG, INFO, WARNING, ERROR)
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  # file_path: scheduler_core.log # Optional log file
+
+# --- API Server ---
+server:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost"
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+    # Add production frontend URLs here
+
+# --- LLM Engine ---
+llm:
+  provider: "openrouter" # Default provider (e.g., openrouter, openai, local)
+  model_name: "mistralai/mixtral-8x7b-instruct" # Default model ID
+  # api_key: loaded from environment variable (e.g., OPENROUTER_API_KEY)
+  # api_base: Auto-detected based on provider, or specify override here
+  temperature: 0.7
+  max_tokens: 1500
+  top_p: 0.9
+  max_retries: 3
+  retry_delay: 1.0
+  # OpenRouter specific (optional)
+  site_url: "https://effectiveday.ai"
+  site_name: "EffectiveDay AI"
+
+# --- Sleep Calculator ---
+sleep:
+  # Sleep guidelines by age group (hours)
+  sleep_guidelines:
+    teen: [8.0, 10.0]
+    young_adult: [7.0, 9.0]
+    adult: [7.0, 9.0]
+    senior: [7.0, 8.0]
+  # Default timing adjustments by chronotype category (hours)
+  chronotype_adjustments:
+    EARLY_BIRD: -1.0
+    NIGHT_OWL: 1.0
+    INTERMEDIATE: 0.0
+  sleep_cycle_duration_minutes: 90
+  sleep_onset_minutes: 15
+  max_sleep_need_adjustment_hours: 1.0 # Max adjustment from 0-100 scale
+  # Sleep quality score weights
+  quality_score_weights:
+    duration: 0.4
+    timing: 0.3
+    physiological: 0.3
+  # Tolerances and ranges for quality scoring
+  duration_tolerance_minutes: 30
+  duration_penalty_range_minutes: 90
+  timing_tolerance_minutes: 30
+  timing_penalty_range_minutes: 90
+  hr_target_min: 40
+  hr_target_max: 60
+  hrv_target_avg: 50 # Example target RMSSD
+
+# --- Chronotype Analyzer ---
+chronotype:
+  sleep_data_min_records: 7
+  midsleep_threshold_early: 3.5 # Mid-sleep before 3:30 AM -> Early Bird
+  midsleep_threshold_late: 5.5  # Mid-sleep after 5:30 AM -> Night Owl
+  confidence_variance_scale: 4.0 # How much stdev impacts confidence
+  min_focus_block_break_minutes: 15
+  update_profile_confidence_threshold: 0.6
+  # MEQ ranges could also be defined here if needed
+  # default_productive_windows: ... (can override defaults from code)
+  # optimal_exercise_times: ... (can override defaults from code)
+
+# --- Task Prioritizer ---
+task_prioritizer:
+  weights:
+    priority: 0.5
+    deadline: 0.35
+    dependencies: 0.1
+    postponed: 0.05
+  # Default energy pattern (can be overridden per user later)
+  # Mapping hour (0-23) to energy level (0.0-1.0)
+  default_user_energy_pattern:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.3
+    6: 0.4
+    7: 0.5
+    8: 0.7
+    9: 0.9
+    10: 1.0
+    11: 0.9
+    12: 0.7
+    13: 0.6
+    14: 0.7
+    15: 0.8
+    16: 0.7
+    17: 0.6
+    18: 0.5
+    19: 0.4
+    20: 0.3
+    21: 0.2
+    22: 0.1
+    23: 0.0
+
+# --- Constraint Solver ---
+solver:
+  time_limit: 30.0 # Default time limit in seconds
+  objective_weights:
+    priority: 10
+    energy_match: 5
+    start_time: 1 # Slight penalty for later start times
+
+# --- Adapters ---
+rag_adapter:
+  # vector_db_path: "./data/vector_db" # Example path
+  # embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  placeholder: true # Indicate that RAG is not fully configured yet
+
+device_adapter:
+  default_source: "MOCK" # Which source to use if not specified
+  # Add specific configs per source if needed, e.g.:
+  # fitbit:
+  #   client_id: ... # loaded from env var FITBIT_CLIENT_ID
+  #   client_secret: ... # loaded from env var FITBIT_CLIENT_SECRET
+
+# --- Services ---
+wearables: {} # Configuration for wearable data processing service might go here
+analytics: {} # Configuration for data storage access (e.g., database connection) might go here
+rl_engine:
+  adaptation_step_size: 0.1
+feedback_storage: {} # Configuration for feedback storage mechanism (e.g., database, file path) might go here
+feedback_nlp: {} # Configuration for the NLP model used in FeedbackAnalyzer might go here
+
+# --- Scheduler ---
+scheduler: {} # Parameters controlling the main scheduling loop or algorithm might go here
